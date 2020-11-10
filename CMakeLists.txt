@@ -4,6 +4,8 @@ project(soft_renderer)
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
 
+include_directories(include src)
+
 add_executable(soft_renderer src/main.c)
 if(WIN32)
     target_link_libraries(soft_renderer SDL2::SDL2-static ${SDL2_LIBRARIES})
