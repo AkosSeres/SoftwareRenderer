@@ -1,5 +1,5 @@
-#ifndef MATH_VEC3_C
-#define MATH_VEC3_C
+#ifndef _CCANVAS_MATH_VEC3_
+#define _CCANVAS_MATH_VEC3_
 
 #include <stdbool.h>
 
