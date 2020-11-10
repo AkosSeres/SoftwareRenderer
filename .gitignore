@@ -185,3 +185,7 @@ build
 
 # VSCode settings
 .vscode
+
+# WASM build files
+dest/
+obj/
