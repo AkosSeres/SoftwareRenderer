@@ -4,9 +4,9 @@ project(soft_renderer)
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
 
-include_directories(include src)
+include_directories(${CMAKE_SOURCE_DIR}/include)
 
-add_executable(soft_renderer src/main.c)
+add_executable(soft_renderer src/main.c src/vec3.c src/ccanvas.c)
 if(WIN32)
     target_link_libraries(soft_renderer SDL2::SDL2-static ${SDL2_LIBRARIES})
 else()
