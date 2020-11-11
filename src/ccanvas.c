@@ -1,12 +1,16 @@
 #include <ccanvas.h>
 
+/**
+ * Function that creates the CCanvas instance and sets up SDL
+ * Creates the window and starts the main loop
+ */
 void CCanvas_create(updateFuncDef updateFunc, drawFuncDef drawFunc,
                     int canvasWidth, int canvasHeight, int windowWidth,
                     int windowHeight) {
   // Allocate memory for the canvas
   CCanvas* cnv = malloc(sizeof(CCanvas));
 
-  // Create window and set sizes
+  // Create window and set sizes (both logical and window size)
   SDL_Init(SDL_INIT_VIDEO);
   SDL_CreateWindowAndRenderer(windowWidth, windowHeight, SDL_WINDOW_RESIZABLE,
                               &(cnv->window), &(cnv->renderer));
@@ -54,8 +58,20 @@ void CCanvas_create(updateFuncDef updateFunc, drawFuncDef drawFunc,
   free(cnv);
 }
 
+/**
+ * Sets the bavkground color of the canvas
+ * It is the color used when CCanvas_clear is called
+ * Note that the canvas clearing is not done automatically every frame, it has
+ * to be called manually for greater control (there may be some cases when you
+ * want to keep the frame from the last update and draw on it additionally)
+ */
 void CCanvas_setBgColor(CCanvas* cnv, Uint32 color) { cnv->bgColor = color; }
 
+/**
+ * Sets the brush color for drawing shapes
+ * It sets the pixel's color in the texture that is used for drawing lines and
+ * other primitives
+ */
 void CCanvas_setBrushColor(CCanvas* cnv, Uint32 color) {
   cnv->brushColor = color;
 
@@ -72,24 +88,48 @@ void CCanvas_setBrushColor(CCanvas* cnv, Uint32 color) {
   SDL_UnlockTexture(cnv->brush);
 }
 
+/**
+ * Makes the program terminate after the next update by flipping the quit member
+ * to true
+ */
 void CCanvas_quit(CCanvas* cnv) { cnv->quit = true; }
 
+/**
+ * CCanvas only uses standard RGBA8888 colors and stores them as a Uint32 so
+ * CCanvas colors are compatible with SDL
+ * (SDL stores RGBA8888 like this: 0xRRGGBBAA)
+ * This function takes four values for all four channels (0-255) and stores them
+ * in a Uint32
+ */
 Uint32 rgba(Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
   return ((Uint32)a | (Uint32)b << 8 | (Uint32)g << 16 | (Uint32)r << 24);
 }
 
+/**
+ * This function does the same thing as rgba(r, g, b, a), but does not take the
+ * alpha channel, returns an opaque color
+ */
 Uint32 rgb(Uint8 r, Uint8 g, Uint8 b) {
   return (255 | (Uint32)b << 8 | (Uint32)g << 16 | (Uint32)r << 24);
 }
 
+/**
+ * Fills the whole canvas with the set background color
+ */
 void CCanvas_clear(CCanvas* cnv) {
   SDL_SetRenderDrawColor(cnv->renderer, getR(cnv->bgColor), getG(cnv->bgColor),
                          getB(cnv->bgColor), getA(cnv->bgColor));
   SDL_RenderClear(cnv->renderer);
 }
 
+/**
+ * This funciton is called every frame
+ * It calls the given update and draw functions then updates the screen
+ * TODO: implement time measuring so that the updateFunc is given a hardcoded
+ * delta time value
+ */
 void CCanvas_loop(void* _cnv) {
-  // Cast it into the right type for easier use
+  // Cast the cnv struct pointer into the right type for easier use
   CCanvas* cnv = (CCanvas*)_cnv;
 
   // Call the update function with a fixed dt (60 fps)
