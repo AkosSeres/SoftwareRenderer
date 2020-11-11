@@ -186,3 +186,14 @@ void Vec3_rotateAroundAxis(Vec3 *v, Vec3 *axis, double angle) {
          y * (u.z * u.y * (1 - cosA) + u.x * sinA) +
          z * (cosA + u.z * u.z * (1 - cosA));
 }
+
+/**
+ * Calculates the cross product of the two given vectors and returns the product
+ */
+Vec3 Vec3_cross(Vec3 *v1, Vec3 *v2) {
+  Vec3 v;
+  v.x = v1->y * v2->z - v1->z * v2->y;
+  v.y = v1->z * v2->x - v1->x * v2->z;
+  v.z = v1->x * v2->y - v1->y * v2->x;
+  return v;
+}
