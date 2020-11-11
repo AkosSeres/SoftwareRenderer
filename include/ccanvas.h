@@ -24,8 +24,11 @@ typedef struct {
   void* updateFunc;  // Functions given by the user, called every frame in the
                      // main loop
   void* drawFunc;
+  // Function pointers called when certain events occur
   void* onKeyDown;
   void* onKeyUp;
+  // Data pointer
+  void* data;
 } CCanvas;
 
 // Function pointer definitions for main loop functions
@@ -36,7 +39,7 @@ typedef void (*initFuncDef)(CCanvas*);
 // Functions to handle creating the instance and quitting
 void CCanvas_create(initFuncDef initFunc, updateFuncDef updateFunc,
                     drawFuncDef drawFunc, int canvasWidth, int canvasHeight,
-                    int windowWidth, int windowHeight);
+                    int windowWidth, int windowHeight, void* data);
 void CCanvas_quit(CCanvas* cnv);
 
 // Main loop function

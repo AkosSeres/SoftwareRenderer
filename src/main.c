@@ -39,6 +39,6 @@ void init(CCanvas *cnv) {
 }
 
 int main(int argc, char *argv[]) {
-  CCanvas_create(init, update, draw, 1024, 1024, 512, 512);
+  CCanvas_create(init, update, draw, 1024, 1024, 512, 512, NULL);
   return 0;
 }

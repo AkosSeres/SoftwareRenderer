@@ -6,7 +6,7 @@
  */
 void CCanvas_create(initFuncDef initFunc, updateFuncDef updateFunc,
                     drawFuncDef drawFunc, int canvasWidth, int canvasHeight,
-                    int windowWidth, int windowHeight) {
+                    int windowWidth, int windowHeight, void* data) {
   // Allocate memory for the canvas
   CCanvas* cnv = malloc(sizeof(CCanvas));
 
@@ -18,6 +18,7 @@ void CCanvas_create(initFuncDef initFunc, updateFuncDef updateFunc,
 
   // Set CCanvas member values
   CCancas_resetEventHandlers(cnv);
+  cnv->data = data;
   cnv->updateFunc = updateFunc;
   cnv->drawFunc = drawFunc;
   cnv->canvasWidth = canvasWidth;
