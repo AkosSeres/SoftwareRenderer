@@ -4,7 +4,7 @@
 /**
  * Creates a new 3-dimensional vector
  */
-Vec3 vec3_new(double _x, double _y, double _z) {
+Vec3 Vec3_new(double _x, double _y, double _z) {
   Vec3 v;
   v.x = _x;
   v.y = _y;
@@ -15,7 +15,7 @@ Vec3 vec3_new(double _x, double _y, double _z) {
 /**
  * Copies the value of a vector into a new variable and returrns it
  */
-Vec3 vec3_copy(Vec3 *src) {
+Vec3 Vec3_copy(Vec3 *src) {
   Vec3 ret;
   ret.x = src->x;
   ret.y = src->y;
@@ -26,14 +26,14 @@ Vec3 vec3_copy(Vec3 *src) {
 /**
  * Compares two vectors and returns true if they are the same
  */
-bool vec3_equals(Vec3 *v, Vec3 *w) {
+bool Vec3_equals(Vec3 *v, Vec3 *w) {
   return (v->x == w->x) && (v->y == w->y) && (v->z == w->z);
 }
 
 /**
  * Returns the length (magnitude) of the given vector
  */
-double vec3_length(Vec3 *v) {
+double Vec3_length(Vec3 *v) {
   return sqrt(v->x * v->x + v->y * v->y + v->z * v->z);
 }
 
@@ -42,14 +42,14 @@ double vec3_length(Vec3 *v) {
  * A lot faster than getting the actual length
  * Useful for comparing two vetors' lengths
  */
-double vec3_sqLength(Vec3 *v) {
+double Vec3_sqLength(Vec3 *v) {
   return (v->x * v->x + v->y * v->y + v->z * v->z);
 }
 
 /**
  * Multiplies the vector by the given number
  */
-void vec3_mult(Vec3 *v, double num) {
+void Vec3_mult(Vec3 *v, double num) {
   v->x *= num;
   v->y *= num;
   v->z *= num;
@@ -59,7 +59,7 @@ void vec3_mult(Vec3 *v, double num) {
  * Divides the vector by the given number
  * When divided by 0, nothing happens
  */
-void vec3_div(Vec3 *v, double num) {
+void Vec3_div(Vec3 *v, double num) {
   if (num == 0) return;
   v->x /= num;
   v->y /= num;
@@ -69,19 +69,19 @@ void vec3_div(Vec3 *v, double num) {
 /**
  * Returns the dot product of the given vectors
  */
-double vec3_dot(Vec3 *v1, Vec3 *v2) {
+double Vec3_dot(Vec3 *v1, Vec3 *v2) {
   return v1->x * v2->x + v1->y * v2->y + v1->z * v2->z;
 }
 
 /**
  * Returns the square of the dot product of the given vectors
  */
-double vec3_dotSq(Vec3 *v1, Vec3 *v2) { return pow(vec3_dot(v1, v2), 2); }
+double Vec3_dotSq(Vec3 *v1, Vec3 *v2) { return pow(Vec3_dot(v1, v2), 2); }
 
 /**
  * Adds the second vector to the first one
  */
-void vec3_add(Vec3 *v1, Vec3 *v2) {
+void Vec3_add(Vec3 *v1, Vec3 *v2) {
   v1->x += v2->x;
   v1->y += v2->y;
   v1->z += v2->z;
@@ -90,7 +90,7 @@ void vec3_add(Vec3 *v1, Vec3 *v2) {
 /**
  * Subtracts the second vector from the first one
  */
-void vec3_sub(Vec3 *v1, Vec3 *v2) {
+void Vec3_sub(Vec3 *v1, Vec3 *v2) {
   v1->x -= v2->x;
   v1->y -= v2->y;
   v1->z -= v2->z;
@@ -102,8 +102,8 @@ void vec3_sub(Vec3 *v1, Vec3 *v2) {
  * The returned angle is in radians
  * dotSq is used here to save a very expensive sqrt call
  */
-double vec3_angle(Vec3 *v, Vec3 *w) {
-  return acos(sqrt((vec3_dotSq(v, w)) / (vec3_sqLength(v) * vec3_sqLength(w))));
+double Vec3_angle(Vec3 *v, Vec3 *w) {
+  return acos(sqrt((Vec3_dotSq(v, w)) / (Vec3_sqLength(v) * Vec3_sqLength(w))));
 }
 
 /**
@@ -111,8 +111,8 @@ double vec3_angle(Vec3 *v, Vec3 *w) {
  * one If t = 1 then the returned vector equals v2 And if t = 0 the returned
  * vector equals v1 If t is outside [0, 1], the function is extrapolating
  */
-Vec3 vec3_lerp(Vec3 *v1, Vec3 *v2, double t) {
-  Vec3 ret = vec3_copy(v1);
+Vec3 Vec3_lerp(Vec3 *v1, Vec3 *v2, double t) {
+  Vec3 ret = Vec3_copy(v1);
   ret.x += (v2->x - v1->x) * t;
   ret.y += (v2->y - v1->y) * t;
   ret.z += (v2->z - v1->z) * t;
