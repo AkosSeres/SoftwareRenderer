@@ -29,6 +29,7 @@ typedef struct {
   void* onKeyUp;
   void* onMouseButtonDown;
   void* onMouseButtonUp;
+  void* onMouseMove;
   // Data pointer
   void* data;
 } CCanvas;
@@ -69,6 +70,7 @@ typedef void (*keyDownFunc)(CCanvas*, SDL_Keycode);
 typedef void (*keyUpFunc)(CCanvas*, SDL_Keycode);
 typedef void (*mouseButtonDownFunc)(CCanvas*, Uint8, Sint32, Sint32);
 typedef void (*mouseButtonUpFunc)(CCanvas*, Uint8, Sint32, Sint32);
+typedef void (*mouseMoveFunc)(CCanvas*, Sint32, Sint32);
 
 // Functions for event handling and for setting up listeners/watchers
 void CCanvas_handleEvents(CCanvas* cnv);
@@ -77,5 +79,6 @@ void CCanvas_watchKeyDown(CCanvas* cnv, keyDownFunc f);
 void CCanvas_watchKeyUp(CCanvas* cnv, keyUpFunc f);
 void CCanvas_watchMouseButtonDown(CCanvas* cnv, mouseButtonDownFunc f);
 void CCanvas_watchMouseButtonUp(CCanvas* cnv, mouseButtonUpFunc f);
+void CCanvas_watchMouseMove(CCanvas* cnv, mouseMoveFunc f);
 
 #endif

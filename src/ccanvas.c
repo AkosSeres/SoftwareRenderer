@@ -220,6 +220,12 @@ void CCanvas_handleEvents(CCanvas* cnv) {
           ((mouseButtonUpFunc)cnv->onMouseButtonUp)(
               cnv, event->button.button, event->button.x, event->button.y);
         break;
+
+      case SDL_MOUSEMOTION:
+        if (cnv->onMouseMove != NULL)
+          ((mouseMoveFunc)cnv->onMouseMove)(cnv, event->motion.xrel,
+                                            event->motion.yrel);
+        break;
     }
   }
 }
@@ -245,4 +251,7 @@ void CCanvas_watchMouseButtonDown(CCanvas* cnv, mouseButtonDownFunc f) {
 }
 void CCanvas_watchMouseButtonUp(CCanvas* cnv, mouseButtonUpFunc f) {
   cnv->onMouseButtonUp = f;
+}
+void CCanvas_watchMouseMove(CCanvas* cnv, mouseMoveFunc f) {
+  cnv->onMouseMove = f;
 }
