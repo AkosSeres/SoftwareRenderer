@@ -26,6 +26,8 @@ void Camera_tiltUp(Camera* cam, double angle);
 void Camera_tiltDown(Camera* cam, double angle);
 void Camera_moveForward(Camera* cam, double distance);
 void Camera_moveUp(Camera* cam, double distance);
+void Camera_moveLeft(Camera* cam, double distance);
+void Camera_moveRight(Camera* cam, double distance);
 Point Camera_project(Camera* cam, Vec3* point);
 
 #endif
