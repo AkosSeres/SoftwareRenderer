@@ -33,6 +33,8 @@ void CCanvas_create(initFuncDef initFunc, updateFuncDef updateFunc,
   CCanvas_setBgColor(cnv, rgb(255, 255, 255));
   CCanvas_setBrushColor(cnv, rgb(0, 0, 0));
 
+  SDL_SetRelativeMouseMode(SDL_TRUE);
+
   // Call the init function before entering the main loop
   initFunc(cnv);
 
@@ -207,6 +209,16 @@ void CCanvas_handleEvents(CCanvas* cnv) {
         if (cnv->onKeyUp != NULL)
           ((keyUpFunc)cnv->onKeyUp)(cnv, event->key.keysym.scancode);
         break;
+      case SDL_MOUSEBUTTONDOWN:
+        if (cnv->onMouseButtonDown != NULL)
+          ((mouseButtonDownFunc)cnv->onMouseButtonDown)(
+              cnv, event->button.button, event->button.x, event->button.y);
+        break;
+      case SDL_MOUSEBUTTONUP:
+        if (cnv->onMouseButtonUp != NULL)
+          ((mouseButtonUpFunc)cnv->onMouseButtonUp)(
+              cnv, event->button.button, event->button.x, event->button.y);
+        break;
     }
   }
 }
@@ -214,7 +226,15 @@ void CCanvas_handleEvents(CCanvas* cnv) {
 void CCancas_resetEventHandlers(CCanvas* cnv) {
   cnv->onKeyDown = NULL;
   cnv->onKeyUp = NULL;
+  cnv->onMouseButtonDown = NULL;
+  cnv->onMouseButtonUp = NULL;
 }
 
 void CCanvas_watchKeyDown(CCanvas* cnv, keyDownFunc f) { cnv->onKeyDown = f; }
 void CCanvas_watchKeyUp(CCanvas* cnv, keyUpFunc f) { cnv->onKeyUp = f; }
+void CCanvas_watchMouseButtonDown(CCanvas* cnv, mouseButtonDownFunc f) {
+  cnv->onMouseButtonDown = f;
+}
+void CCanvas_watchMouseButtonUp(CCanvas* cnv, mouseButtonUpFunc f) {
+  cnv->onMouseButtonUp = f;
+}

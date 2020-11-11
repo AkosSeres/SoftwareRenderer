@@ -27,6 +27,8 @@ typedef struct {
   // Function pointers called when certain events occur
   void* onKeyDown;
   void* onKeyUp;
+  void* onMouseButtonDown;
+  void* onMouseButtonUp;
   // Data pointer
   void* data;
 } CCanvas;
@@ -65,11 +67,15 @@ void CCanvas_line(CCanvas* cnv, int x1, int y1, int x2, int y2, int thickness);
 // Function definitions for event handling
 typedef void (*keyDownFunc)(CCanvas*, SDL_Scancode);
 typedef void (*keyUpFunc)(CCanvas*, SDL_Scancode);
+typedef void (*mouseButtonDownFunc)(CCanvas*, Uint8, Sint32, Sint32);
+typedef void (*mouseButtonUpFunc)(CCanvas*, Uint8, Sint32, Sint32);
 
 // Functions for event handling and for setting up listeners/watchers
 void CCanvas_handleEvents(CCanvas* cnv);
 void CCancas_resetEventHandlers(CCanvas* cnv);
 void CCanvas_watchKeyDown(CCanvas* cnv, keyDownFunc f);
 void CCanvas_watchKeyUp(CCanvas* cnv, keyUpFunc f);
+void CCanvas_watchMouseButtonDown(CCanvas* cnv, mouseButtonDownFunc f);
+void CCanvas_watchMouseButtonUp(CCanvas* cnv, mouseButtonUpFunc f);
 
 #endif
