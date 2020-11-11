@@ -24,16 +24,19 @@ typedef struct {
   void* updateFunc;  // Functions given by the user, called every frame in the
                      // main loop
   void* drawFunc;
+  void* onKeyDown;
+  void* onKeyUp;
 } CCanvas;
 
 // Function pointer definitions for main loop functions
 typedef void (*updateFuncDef)(double, CCanvas*);
 typedef void (*drawFuncDef)(CCanvas*);
+typedef void (*initFuncDef)(CCanvas*);
 
 // Functions to handle creating the instance and quitting
-void CCanvas_create(updateFuncDef updateFunc, drawFuncDef drawFunc,
-                    int canvasWidth, int canvasHeight, int windowWidth,
-                    int windowHeight);
+void CCanvas_create(initFuncDef initFunc, updateFuncDef updateFunc,
+                    drawFuncDef drawFunc, int canvasWidth, int canvasHeight,
+                    int windowWidth, int windowHeight);
 void CCanvas_quit(CCanvas* cnv);
 
 // Main loop function
@@ -55,5 +58,15 @@ Uint32 rgb(Uint8 r, Uint8 g, Uint8 b);
 // TODO: implement functions for drawing rectangles and maybe circles
 void CCanvas_clear(CCanvas* cnv);
 void CCanvas_line(CCanvas* cnv, int x1, int y1, int x2, int y2, int thickness);
+
+// Function definitions for event handling
+typedef void (*keyDownFunc)(CCanvas*, SDL_Scancode);
+typedef void (*keyUpFunc)(CCanvas*, SDL_Scancode);
+
+// Functions for event handling and for setting up listeners/watchers
+void CCanvas_handleEvents(CCanvas* cnv);
+void CCancas_resetEventHandlers(CCanvas* cnv);
+void CCanvas_watchKeyDown(CCanvas* cnv, keyDownFunc f);
+void CCanvas_watchKeyUp(CCanvas* cnv, keyUpFunc f);
 
 #endif

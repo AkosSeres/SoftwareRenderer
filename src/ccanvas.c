@@ -4,9 +4,9 @@
  * Function that creates the CCanvas instance and sets up SDL
  * Creates the window and starts the main loop
  */
-void CCanvas_create(updateFuncDef updateFunc, drawFuncDef drawFunc,
-                    int canvasWidth, int canvasHeight, int windowWidth,
-                    int windowHeight) {
+void CCanvas_create(initFuncDef initFunc, updateFuncDef updateFunc,
+                    drawFuncDef drawFunc, int canvasWidth, int canvasHeight,
+                    int windowWidth, int windowHeight) {
   // Allocate memory for the canvas
   CCanvas* cnv = malloc(sizeof(CCanvas));
 
@@ -17,6 +17,7 @@ void CCanvas_create(updateFuncDef updateFunc, drawFuncDef drawFunc,
   SDL_RenderSetLogicalSize(cnv->renderer, canvasWidth, canvasHeight);
 
   // Set CCanvas member values
+  CCancas_resetEventHandlers(cnv);
   cnv->updateFunc = updateFunc;
   cnv->drawFunc = drawFunc;
   cnv->canvasWidth = canvasWidth;
@@ -30,6 +31,9 @@ void CCanvas_create(updateFuncDef updateFunc, drawFuncDef drawFunc,
   // Set default colors (white for background and black for painting)
   CCanvas_setBgColor(cnv, rgb(255, 255, 255));
   CCanvas_setBrushColor(cnv, rgb(0, 0, 0));
+
+  // Call the init function before entering the main loop
+  initFunc(cnv);
 
   /**
    * This is main loop of the program.
@@ -132,6 +136,9 @@ void CCanvas_loop(void* _cnv) {
   // Cast the cnv struct pointer into the right type for easier use
   CCanvas* cnv = (CCanvas*)_cnv;
 
+  // Handle events first
+  CCanvas_handleEvents(cnv);
+
   // Call the update function with a fixed dt (60 fps)
   // TODO: implement frame timing and/or time measuring
   ((updateFuncDef)(cnv)->updateFunc)(16.0, cnv);
@@ -178,3 +185,35 @@ void CCanvas_line(CCanvas* cnv, int x1, int y1, int x2, int y2, int thickness) {
   SDL_RenderCopyEx(cnv->renderer, cnv->brush, &srcRect, &dst,
                    angle * 180 / M_PI, NULL, SDL_FLIP_NONE);
 }
+
+void CCanvas_handleEvents(CCanvas* cnv) {
+  // Fetch all events from SDL
+  while (SDL_PollEvent(&(cnv->event))) {
+    SDL_Event* event = &(cnv->event);
+
+    switch (event->type) {
+      case SDL_QUIT:
+        CCanvas_quit(cnv);
+        return;
+        break;
+
+      case SDL_KEYDOWN:
+        if (cnv->onKeyDown != NULL)
+          ((keyDownFunc)cnv->onKeyDown)(cnv, event->key.keysym.scancode);
+        break;
+
+      case SDL_KEYUP:
+        if (cnv->onKeyUp != NULL)
+          ((keyUpFunc)cnv->onKeyUp)(cnv, event->key.keysym.scancode);
+        break;
+    }
+  }
+}
+
+void CCancas_resetEventHandlers(CCanvas* cnv) {
+  cnv->onKeyDown = NULL;
+  cnv->onKeyUp = NULL;
+}
+
+void CCanvas_watchKeyDown(CCanvas* cnv, keyDownFunc f) { cnv->onKeyDown = f; }
+void CCanvas_watchKeyUp(CCanvas* cnv, keyUpFunc f) { cnv->onKeyUp = f; }
