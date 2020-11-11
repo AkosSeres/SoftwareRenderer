@@ -30,11 +30,12 @@ void CCanvas_create(updateFuncDef updateFunc, drawFuncDef drawFunc,
   /**
    * This is main loop of the program.
    * It is handled differently in the WASM build
-   * The emscripten_set_main_loop_arg uses the window.requestAnimationFrame() JS method
-   * to periodically call the given function in sync with the monitor refresh rate
-   * and it handles the timing automatically.
-   * In the native build, the timing has to be handled manually
-   * TODO: find a way to sync the native build with the monitor and not use a hardcoded frametime
+   * The emscripten_set_main_loop_arg uses the window.requestAnimationFrame() JS
+   * method to periodically call the given function in sync with the monitor
+   * refresh rate and it handles the timing automatically. In the native build,
+   * the timing has to be handled manually
+   * TODO: find a way to sync the native build with the monitor and not use a
+   * hardcoded frametime
    */
 #ifdef __EMSCRIPTEN__
   emscripten_set_main_loop_arg(CCanvas_loop, cnv, 0, 1);
@@ -99,4 +100,41 @@ void CCanvas_loop(void* _cnv) {
   ((drawFuncDef)cnv->drawFunc)(cnv);
   // Update screen after rendering
   SDL_RenderPresent(cnv->renderer);
+}
+
+/**
+ * Function for drawing lines with arbitrary thickness
+ * It uses the 1x1 brush texture for srawing
+ * It streches the texture then rotates it to fit the desired footprint
+ */
+void CCanvas_line(CCanvas* cnv, int x1, int y1, int x2, int y2, int thickness) {
+  // Does not do anything if the line has length zero
+  if (x1 == x2 && y1 == y2) return;
+
+  // Select the 1x1 texture
+  SDL_Rect srcRect;
+  srcRect.x = 0;
+  srcRect.y = 0;
+  srcRect.w = 1;
+  srcRect.h = 1;
+
+  // Calculate length, orientation and position of the line
+  int len = (int)sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+  int centerX = (x1 + x2) / 2;
+  int centerY = (y1 + y2) / 2;
+  double angle = acos((double)abs(x1 - x2) / len);
+  // Correct the sign of the angle
+  // (it has to be correctedbecause len is always positive)
+  if ((x1 - x2) * (y1 - y2) < 0) angle *= -1;
+
+  // Set destination rectangle to fit the line as if it was horizontal
+  SDL_Rect dst;
+  dst.x = centerX - len / 2;
+  dst.y = centerY - thickness / 2;
+  dst.w = len;
+  dst.h = thickness;
+
+  // Render the rectangle while rotating it
+  SDL_RenderCopyEx(cnv->renderer, cnv->brush, &srcRect, &dst,
+                   angle * 180 / M_PI, NULL, SDL_FLIP_NONE);
 }

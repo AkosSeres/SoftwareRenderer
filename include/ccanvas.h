@@ -8,6 +8,7 @@
 
 #include <stdbool.h>
 #include <stdlib.h>
+#include <math.h>
 
 typedef struct {
   SDL_Window* window;
@@ -43,5 +44,7 @@ Uint32 rgb(Uint8 r, Uint8 g, Uint8 b);
 
 void CCanvas_clear(CCanvas* cnv);
 void CCanvas_loop(void* _cnv);
+
+void CCanvas_line(CCanvas* cnv, int x1, int y1, int x2, int y2, int thickness);
 
 #endif
