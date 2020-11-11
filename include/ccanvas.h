@@ -65,8 +65,8 @@ void CCanvas_clear(CCanvas* cnv);
 void CCanvas_line(CCanvas* cnv, int x1, int y1, int x2, int y2, int thickness);
 
 // Function definitions for event handling
-typedef void (*keyDownFunc)(CCanvas*, SDL_Scancode);
-typedef void (*keyUpFunc)(CCanvas*, SDL_Scancode);
+typedef void (*keyDownFunc)(CCanvas*, SDL_Keycode);
+typedef void (*keyUpFunc)(CCanvas*, SDL_Keycode);
 typedef void (*mouseButtonDownFunc)(CCanvas*, Uint8, Sint32, Sint32);
 typedef void (*mouseButtonUpFunc)(CCanvas*, Uint8, Sint32, Sint32);
 

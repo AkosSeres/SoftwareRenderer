@@ -194,6 +194,7 @@ void CCanvas_handleEvents(CCanvas* cnv) {
   while (SDL_PollEvent(&(cnv->event))) {
     SDL_Event* event = &(cnv->event);
 
+    // Call the corresponding function based on what's happened
     switch (event->type) {
       case SDL_QUIT:
         CCanvas_quit(cnv);
@@ -202,13 +203,13 @@ void CCanvas_handleEvents(CCanvas* cnv) {
 
       case SDL_KEYDOWN:
         if (cnv->onKeyDown != NULL)
-          ((keyDownFunc)cnv->onKeyDown)(cnv, event->key.keysym.scancode);
+          ((keyDownFunc)cnv->onKeyDown)(cnv, event->key.keysym.sym);
         break;
-
       case SDL_KEYUP:
         if (cnv->onKeyUp != NULL)
-          ((keyUpFunc)cnv->onKeyUp)(cnv, event->key.keysym.scancode);
+          ((keyUpFunc)cnv->onKeyUp)(cnv, event->key.keysym.sym);
         break;
+
       case SDL_MOUSEBUTTONDOWN:
         if (cnv->onMouseButtonDown != NULL)
           ((mouseButtonDownFunc)cnv->onMouseButtonDown)(
@@ -223,6 +224,9 @@ void CCanvas_handleEvents(CCanvas* cnv) {
   }
 }
 
+/**
+ * Sets all event handler function pointers to NULL
+ */
 void CCancas_resetEventHandlers(CCanvas* cnv) {
   cnv->onKeyDown = NULL;
   cnv->onKeyUp = NULL;
@@ -230,6 +234,10 @@ void CCancas_resetEventHandlers(CCanvas* cnv) {
   cnv->onMouseButtonUp = NULL;
 }
 
+/**
+ * These functions are responsible for setting the corresponding function
+ * pointer in the structure
+ */
 void CCanvas_watchKeyDown(CCanvas* cnv, keyDownFunc f) { cnv->onKeyDown = f; }
 void CCanvas_watchKeyUp(CCanvas* cnv, keyUpFunc f) { cnv->onKeyUp = f; }
 void CCanvas_watchMouseButtonDown(CCanvas* cnv, mouseButtonDownFunc f) {
