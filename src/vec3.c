@@ -99,10 +99,9 @@ void Vec3_sub(Vec3 *v1, Vec3 *v2) {
  * Calculates the angle between the given vectors
  * Uses their dot products and acos to calculate it
  * The returned angle is in radians
- * dotSq is used here to save a very expensive sqrt call
  */
 double Vec3_angle(Vec3 *v, Vec3 *w) {
-  return acos(sqrt((Vec3_dotSq(v, w)) / (Vec3_sqLength(v) * Vec3_sqLength(w))));
+  return acos((Vec3_dot(v, w)) / (Vec3_length(v) * Vec3_length(w)));
 }
 
 /**
