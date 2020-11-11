@@ -1,4 +1,3 @@
-#include <math.h>
 #include <vec3.h>
 
 /**
@@ -117,4 +116,73 @@ Vec3 Vec3_lerp(Vec3 *v1, Vec3 *v2, double t) {
   ret.y += (v2->y - v1->y) * t;
   ret.z += (v2->z - v1->z) * t;
   return ret;
+}
+
+/**
+ * Keeps the direction of vector v but sets it's length to the given number
+ * In case the length to be set to is negative, the resulting vector is going to
+ * flip direction
+ */
+void Vec3_setLength(Vec3 *v, double lenToSet) {
+  double len = Vec3_length(v);
+  if (len == 0) return;
+  double mult = lenToSet / len;
+  v->x *= mult;
+  v->y *= mult;
+  v->z *= mult;
+}
+
+/**
+ * Rotates the vector around the X axis by the angle that is in radians
+ */
+void Vec3_rotateX(Vec3 *v, double angle) {
+  double cosA = cos(angle), sinA = sin(angle);
+  double y = v->y, z = v->z;
+  // Set new coordinates
+  v->y = y * cosA - z * sinA;
+  v->z = y * sinA + z * cosA;
+}
+
+/**
+ * Rotates the vector around the Y axis by the angle that is in radians
+ */
+void Vec3_rotateY(Vec3 *v, double angle) {
+  double cosA = cos(angle), sinA = sin(angle);
+  double x = v->x, z = v->z;
+  // Set new coordinates
+  v->x = x * cosA + z * sinA;
+  v->z = -x * sinA + z * cosA;
+}
+
+/**
+ * Rotates the vector around the Z axis by the angle that is in radians
+ */
+void Vec3_rotateZ(Vec3 *v, double angle) {
+  double cosA = cos(angle), sinA = sin(angle);
+  double x = v->x, y = v->y;
+  // Set new coordinates
+  v->x = x * cosA - y * sinA;
+  v->y = x * sinA + y * cosA;
+}
+
+/**
+ * Rotates the vector around the given axis by the given angle in radians
+ */
+void Vec3_rotateAroundAxis(Vec3 *v, Vec3 *axis, double angle) {
+  double cosA = cos(angle), sinA = sin(angle);
+  Vec3 u = Vec3_copy(axis);
+  // Normalise the axis vector
+  Vec3_setLength(&u, 1);
+  // Store old coordinates
+  double x = v->x, y = v->y, z = v->z;
+  // Set new coordinates
+  v->x = x * (cosA + u.x * u.x * (1 - cosA)) +
+         y * (u.x * u.y * (1 - cosA) - u.z * sinA) +
+         z * (u.x * u.z * (1 - cosA) + u.y * sinA);
+  v->y = x * (u.y * u.x * (1 - cosA) + u.z * sinA) +
+         y * (cosA + u.y * u.y * (1 - cosA)) +
+         z * (u.y * u.z * (1 - cosA) - u.x * sinA);
+  v->z = x * (u.z * u.x * (1 - cosA) - u.y * sinA) +
+         y * (u.z * u.y * (1 - cosA) + u.x * sinA) +
+         z * (cosA + u.z * u.z * (1 - cosA));
 }

@@ -1,6 +1,7 @@
 #ifndef _CCANVAS_MATH_VEC3_
 #define _CCANVAS_MATH_VEC3_
 
+#include <math.h>
 #include <stdbool.h>
 
 /**
@@ -24,5 +25,10 @@ void Vec3_add(Vec3 *v1, Vec3 *v2);
 void Vec3_sub(Vec3 *v1, Vec3 *v2);
 double Vec3_angle(Vec3 *v, Vec3 *w);
 Vec3 Vec3_lerp(Vec3 *v1, Vec3 *v2, double t);
+void Vec3_setLength(Vec3 *v, double lenToSet);
+void Vec3_rotateX(Vec3 *v, double angle);
+void Vec3_rotateY(Vec3 *v, double angle);
+void Vec3_rotateZ(Vec3 *v, double angle);
+void Vec3_rotateAroundAxis(Vec3 *v, Vec3 *axis, double angle);
 
 #endif
