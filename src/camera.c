@@ -48,6 +48,13 @@ void Camera_moveForward(Camera* cam, double distance) {
   Vec3_add(&(cam->pos), &dir);
 }
 
+void Camera_moveForwardHorizontally(Camera* cam, double distance) {
+  Vec3 right = Vec3_cross(&(cam->up), &cam->lookDirection);
+  Vec3 dir = Vec3_cross(&(cam->up), &right);
+  Vec3_setLength(&dir, -distance);
+  Vec3_add(&(cam->pos), &dir);
+}
+
 void Camera_moveUp(Camera* cam, double distance) {
   Vec3 dir = Vec3_copy(&(cam->up));
   Vec3_setLength(&dir, distance);
