@@ -226,6 +226,12 @@ void CCanvas_handleEvents(CCanvas* cnv) {
           ((mouseMoveFunc)cnv->onMouseMove)(cnv, event->motion.xrel,
                                             event->motion.yrel);
         break;
+
+      case SDL_DROPFILE:
+        if (cnv->onFileDrop != NULL)
+          ((fileDropFunc)cnv->onFileDrop)(cnv, event->drop.file);
+        SDL_free(event->drop.file);
+        break;
     }
   }
 }
@@ -238,6 +244,8 @@ void CCancas_resetEventHandlers(CCanvas* cnv) {
   cnv->onKeyUp = NULL;
   cnv->onMouseButtonDown = NULL;
   cnv->onMouseButtonUp = NULL;
+  cnv->onMouseMove = NULL;
+  cnv->onFileDrop = NULL;
 }
 
 /**
@@ -254,4 +262,7 @@ void CCanvas_watchMouseButtonUp(CCanvas* cnv, mouseButtonUpFunc f) {
 }
 void CCanvas_watchMouseMove(CCanvas* cnv, mouseMoveFunc f) {
   cnv->onMouseMove = f;
+}
+void CCanvas_watchFileDrop(CCanvas* cnv, fileDropFunc f) {
+  cnv->onFileDrop = f;
 }
