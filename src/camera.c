@@ -112,11 +112,7 @@ Point Camera_projectLinear(Camera* cam, Vec3* point) {
   double z = Vec3_dot(&toPoint, &cam->lookDirection);
   double x = Vec3_dot(&toPoint, &right);
 
-  double Znear = 0.5, Zfar = 50;
-  double w = 1.0 / tan(cam->hFov / 2);
-  double h = 1.0 / tan(cam->vFov / 2);
-  double Q = Zfar / (Zfar - Znear);
-
-  return Point_new(cam->hRes * (1 + x * w / Q / Znear / z) / 2,
-                   cam->vRes * (1 + y * h / Q / Znear / z) / 2);
+  double Znear = 1;
+  return Point_new(cam->hRes * (1 + x * Znear / z) / 2,
+                   cam->vRes * (1 + y * Znear / z) / 2);
 }
