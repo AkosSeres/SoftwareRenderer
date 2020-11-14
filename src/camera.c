@@ -112,6 +112,8 @@ Point Camera_projectLinear(Camera* cam, Vec3* point) {
   double z = Vec3_dot(&toPoint, &cam->lookDirection);
   double x = Vec3_dot(&toPoint, &right);
 
+  if (z < 0) return Point_new(NAN, NAN);
+
   double Znear = 1;
   return Point_new(cam->hRes * (1 + x * Znear / z) / 2,
                    cam->vRes * (1 + y * Znear / z) / 2);
