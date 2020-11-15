@@ -3,25 +3,32 @@
 
 #include <camera.h>
 #include <point.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <vec3.h>
 
 typedef struct {
-  int a;
-  int b;
+  long int a;
+  long int b;
 } Edge;
 
-Edge Edge_new(int a, int b);
+Edge Edge_new(long int a, long int b);
 
 typedef struct {
   Camera cam;
   Vec3* vertices;
-  int verticesCount;
+  long int verticesCount;
   Point* projectedPoints;
   Edge* edges;
-  int edgeCount;
+  long int edgeCount;
 } Scene;
 
 void Scene_setCamera(Scene* scene, Camera cam);
 void Scene_projectPoints(Scene* scene);
+void Scene_loadObj(Scene* scene, const char* fileName);
+void Scene_free(Scene* scene);
+
+void readVertexNumbers(char* str, long int* vertexList, int* vertexCount);
 
 #endif
