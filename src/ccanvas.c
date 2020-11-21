@@ -33,8 +33,6 @@ void CCanvas_create(initFuncDef initFunc, updateFuncDef updateFunc,
   CCanvas_setBgColor(cnv, rgb(255, 255, 255));
   CCanvas_setBrushColor(cnv, rgb(0, 0, 0));
 
-  SDL_SetRelativeMouseMode(SDL_TRUE);
-
   // Call the init function before entering the main loop
   initFunc(cnv);
 

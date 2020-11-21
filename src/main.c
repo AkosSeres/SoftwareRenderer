@@ -156,6 +156,9 @@ void onKeyDown(CCanvas *cnv, SDL_Keycode code) {
     case SDLK_LSHIFT:
       app->movingDown = true;
       break;
+    case SDLK_ESCAPE:
+      SDL_SetRelativeMouseMode(SDL_FALSE);
+      break;
   }
 }
 
