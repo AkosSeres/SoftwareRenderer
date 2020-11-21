@@ -24,6 +24,7 @@ typedef struct {
   long int edgeCount;
 } Scene;
 
+void Scene_erase(Scene* scene);
 void Scene_setCamera(Scene* scene, Camera cam);
 void Scene_projectPoints(Scene* scene);
 void Scene_loadObj(Scene* scene, const char* fileName);

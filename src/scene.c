@@ -1,5 +1,13 @@
 #include <scene.h>
 
+void Scene_erase(Scene* scene) {
+  scene->vertices = NULL;
+  scene->projectedPoints = NULL;
+  scene->edges = NULL;
+  scene->edgeCount = 0;
+  scene->verticesCount = 0;
+}
+
 void Scene_setCamera(Scene* scene, Camera cam) { scene->cam = cam; }
 
 void Scene_projectPoints(Scene* scene) {
@@ -84,6 +92,7 @@ void Scene_free(Scene* scene) {
   free(scene->vertices);
   free(scene->edges);
   free(scene->projectedPoints);
+  Scene_erase(scene);
 }
 
 void readVertexNumbers(char* str, long int* vertexList, int* vertexCount) {
