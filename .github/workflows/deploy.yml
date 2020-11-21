@@ -27,5 +27,6 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages
+          TARGET_FOLDER: page
           FOLDER: dest
           CLEAN: true
