@@ -266,3 +266,21 @@ void CCanvas_watchMouseMove(CCanvas* cnv, mouseMoveFunc f) {
 void CCanvas_watchFileDrop(CCanvas* cnv, fileDropFunc f) {
   cnv->onFileDrop = f;
 }
+
+#ifdef __EMSCRIPTEN__
+int CCanvas_dropEventForSDL(char* fileName) {
+  SDL_Event* e = SDL_malloc(sizeof(SDL_Event));
+  SDL_DropEvent event;
+  event.type = SDL_DROPFILE;
+  event.timestamp = SDL_GetTicks();
+  size_t memLen = strlen(fileName) + 1;
+  event.file = SDL_malloc(memLen);
+  memcpy(event.file, fileName, memLen);
+  event.windowID = 0;
+  e->type = SDL_DROPFILE;
+  e->drop = event;
+  int retVal = SDL_PushEvent(e);
+  SDL_free(e);
+  return retVal;
+}
+#endif

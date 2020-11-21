@@ -19,7 +19,7 @@
     <title>WASM Sofrware renderer</title>
 </head>
 
-<body>
+<body ondrop="fileDropped(event);" ondragover="event.preventDefault();">
     <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault();"></canvas>
     <script>
         var Module = {
@@ -45,6 +45,19 @@
             let canvas = document.getElementById('canvas');
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
+        }
+
+        async function fileDropped(event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            let fileToLoad = event.dataTransfer.files[0];
+            let contents = await fileToLoad.text();
+            let name = fileToLoad.name;
+            FS.writeFile(name, contents);
+            contents = FS.readFile(name, { encoding: 'utf8' });
+
+            Module.ccall('CCanvas_dropEventForSDL', 'number', ['string'], [name]);
         }
     </script>
     <script src="index.js"></script>

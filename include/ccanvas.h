@@ -84,4 +84,8 @@ void CCanvas_watchMouseButtonUp(CCanvas* cnv, mouseButtonUpFunc f);
 void CCanvas_watchMouseMove(CCanvas* cnv, mouseMoveFunc f);
 void CCanvas_watchFileDrop(CCanvas* cnv, fileDropFunc f);
 
+#ifdef __EMSCRIPTEN__
+int CCanvas_dropEventForSDL(char *fileName);
+#endif
+
 #endif
