@@ -69,6 +69,11 @@ void init(CCanvas *cnv) {
       Camera_new(Vec3_new(0, 0, 0), Vec3_new(0, 1, 0), 512, 512, 3.14 / 3,
                  3.14 / 3));  // Put camera in some default position
 
+  // Then load the base scene
+  Scene_loadObj(&(app->scene), "base_scene.obj");
+  calculateSceneRadius(app);
+  calculateCameraPosAndSpeed(app);
+
   // Set watchers/event listeners
   CCanvas_watchKeyDown(cnv, onKeyDown);
   CCanvas_watchKeyUp(cnv, onKeyUp);
@@ -232,7 +237,6 @@ void calculateCameraPosAndSpeed(SoftwareRenderer *app) {
 
   double angle = (double)SDL_GetTicks() / 2000.0;
   Vec3 newPos = Vec3_cylindrical(r, angle, r / 1.2);
-  SDL_Log("new Pos %f %f %f", newPos.x, newPos.y, newPos.z);
   Vec3 newDirection = Vec3_copy(&newPos);
   Vec3_setLength(&newDirection, -1);
 
