@@ -29,6 +29,9 @@ void Camera_moveForwardHorizontally(Camera* cam, double distance);
 void Camera_moveUp(Camera* cam, double distance);
 void Camera_moveLeft(Camera* cam, double distance);
 void Camera_moveRight(Camera* cam, double distance);
+Vec3 Camera_directionLeft(Camera* cam);
+Vec3 Camera_directionRight(Camera* cam);
+Vec3 Camera_directionForwardHorizontal(Camera* cam);
 Point Camera_project(Camera* cam, Vec3* point);
 Point Camera_projectLinear(Camera* cam, Vec3* point);
 

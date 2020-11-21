@@ -66,10 +66,30 @@ void Camera_moveLeft(Camera* cam, double distance) {
   Vec3_setLength(&dir, distance);
   Vec3_add(&(cam->pos), &dir);
 }
+
 void Camera_moveRight(Camera* cam, double distance) {
   Vec3 dir = Vec3_cross(&(cam->lookDirection), &(cam->up));
   Vec3_setLength(&dir, -distance);
   Vec3_add(&(cam->pos), &dir);
+}
+
+Vec3 Camera_directionLeft(Camera* cam) {
+  Vec3 dir = Vec3_cross(&(cam->lookDirection), &(cam->up));
+  Vec3_setLength(&dir, 1);
+  return dir;
+}
+
+Vec3 Camera_directionRight(Camera* cam) {
+  Vec3 dir = Vec3_cross(&(cam->lookDirection), &(cam->up));
+  Vec3_setLength(&dir, -1);
+  return dir;
+}
+
+Vec3 Camera_directionForwardHorizontal(Camera* cam) {
+  Vec3 right = Vec3_cross(&(cam->up), &cam->lookDirection);
+  Vec3 dir = Vec3_cross(&(cam->up), &right);
+  Vec3_setLength(&dir, -1);
+  return dir;
 }
 
 Point Camera_project(Camera* cam, Vec3* point) {
