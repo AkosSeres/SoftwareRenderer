@@ -31,5 +31,6 @@ void Vec3_rotateY(Vec3 *v, double angle);
 void Vec3_rotateZ(Vec3 *v, double angle);
 void Vec3_rotateAroundAxis(Vec3 *v, Vec3 *axis, double angle);
 Vec3 Vec3_cross(Vec3* v1, Vec3* v2);
+Vec3 Vec3_cylindrical(double r, double angle, double z);
 
 #endif

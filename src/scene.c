@@ -95,6 +95,18 @@ void Scene_free(Scene* scene) {
   Scene_erase(scene);
 }
 
+double Scene_radius(Scene* scene) {
+  double max = 0;
+
+  for (int i = 0; i < scene->verticesCount; i++) {
+    Vec3* v = &(scene->vertices[i]);
+    double r = v->x * v->x + v->y * v->y + v->z * v->z;
+    max = max < r ? r : max;
+  }
+
+  return sqrt(max);
+}
+
 void readVertexNumbers(char* str, long int* vertexList, int* vertexCount) {
   char* current = str;
   char* next;

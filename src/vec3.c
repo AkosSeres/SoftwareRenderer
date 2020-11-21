@@ -196,3 +196,15 @@ Vec3 Vec3_cross(Vec3 *v1, Vec3 *v2) {
   v.z = v1->x * v2->y - v1->y * v2->x;
   return v;
 }
+
+/**
+ * Returns the vector given by coordinates in cylindrical coordinates
+ * Angle is of course has to be in radians
+ */
+Vec3 Vec3_cylindrical(double r, double angle, double height) {
+  Vec3 v;
+  v.x = r * cos(angle);
+  v.z = r * sin(angle);
+  v.y = height;
+  return v;
+}

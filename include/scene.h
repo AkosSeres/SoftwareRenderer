@@ -29,6 +29,7 @@ void Scene_setCamera(Scene* scene, Camera cam);
 void Scene_projectPoints(Scene* scene);
 void Scene_loadObj(Scene* scene, const char* fileName);
 void Scene_free(Scene* scene);
+double Scene_radius(Scene* scene);
 
 void readVertexNumbers(char* str, long int* vertexList, int* vertexCount);
 

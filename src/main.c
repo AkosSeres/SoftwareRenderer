@@ -12,12 +12,15 @@
 #include <vec3.h>
 
 // A struct to hold all the data needed for the program
-typedef struct {
+typedef struct SoftwareRenderer {
   Scene scene;       // Scene containing the geometry and camera
   Vec3 vel;          // Current velocity of the camera
   double moveForce;  // How much force is applied to the camera when moving
   bool movingForward, movingBackward, movingLeft, movingRight, movingUp,
       movingDown;
+  double sceneRadius;
+  Uint32 lastInput;
+  Uint32 currentTick;
 } SoftwareRenderer;
 
 void init(CCanvas *cnv);
@@ -28,6 +31,8 @@ void onMouseMove(CCanvas *cnv, Sint32 dx, Sint32 dy);
 void onFileDrop(CCanvas *cnv, char *fileName);
 void onKeyDown(CCanvas *cnv, SDL_Keycode code);
 void onKeyUp(CCanvas *cnv, SDL_Keycode code);
+void calculateSceneRadius(SoftwareRenderer *app);
+void calculateCameraPosAndSpeed(SoftwareRenderer *app);
 
 int main(int argc, char *argv[]) {
   SoftwareRenderer app;
@@ -72,6 +77,8 @@ void update(double dt, CCanvas *cnv) {
   SoftwareRenderer *app = (SoftwareRenderer *)cnv->data;
   Scene *scene = &app->scene;
 
+  app->currentTick = SDL_GetTicks();
+
   Vec3 force = Vec3_new(0, 0, 0), temp;
   temp = Camera_directionForwardHorizontal(&scene->cam);
   if (app->movingForward) Vec3_add(&force, &temp);
@@ -84,7 +91,9 @@ void update(double dt, CCanvas *cnv) {
   if (app->movingUp) Vec3_add(&force, &(scene->cam.up));
   if (app->movingDown) Vec3_sub(&force, &(scene->cam.up));
 
-  Vec3_mult(&force, dt * app->moveForce);
+  Vec3_mult(&force, app->sceneRadius * dt * app->moveForce *
+                        0.01);  // Make the move velocity proportional
+                                // to the size of the scene
   Vec3_add(&app->vel, &force);
 
   Vec3_mult(&app->vel, pow(0.00001, dt / 1000));
@@ -92,6 +101,10 @@ void update(double dt, CCanvas *cnv) {
   Vec3 displacement = Vec3_copy(&app->vel);
   Vec3_mult(&displacement, dt / 1000);
   Vec3_add(&(scene->cam.pos), &displacement);
+
+  if (app->currentTick - app->lastInput > 10000) {
+    calculateCameraPosAndSpeed(app);
+  }
 
   Scene_projectPoints(scene);
 }
@@ -117,6 +130,8 @@ void draw(CCanvas *cnv) {
 }
 
 void onMouseButtonDown(CCanvas *cnv, Uint8 button, Sint32 x, Sint32 y) {
+  SoftwareRenderer *app = ((SoftwareRenderer *)cnv->data);
+  app->lastInput = app->currentTick;
   switch (button) {
     case SDL_BUTTON_LEFT:
       if (!SDL_GetRelativeMouseMode()) SDL_SetRelativeMouseMode(SDL_TRUE);
@@ -127,19 +142,24 @@ void onMouseButtonDown(CCanvas *cnv, Uint8 button, Sint32 x, Sint32 y) {
 void onMouseMove(CCanvas *cnv, Sint32 dx, Sint32 dy) {
   SoftwareRenderer *app = (SoftwareRenderer *)cnv->data;
   Scene *scene = &app->scene;
+  app->lastInput = app->currentTick;
 
   Camera_turnRight(&scene->cam, dx / 1000.0);
   Camera_tiltDown(&scene->cam, dy / 1000.0);
 }
 
 void onFileDrop(CCanvas *cnv, char *fileName) {
-  Scene_free((Scene *)cnv->data);
-  Scene_loadObj((Scene *)cnv->data, fileName);
+  SoftwareRenderer *app = (SoftwareRenderer *)cnv->data;
+  Scene_free(&(app->scene));
+  Scene_loadObj(&(app->scene), fileName);
+  calculateSceneRadius(app);
+  calculateCameraPosAndSpeed(app);
 }
 
 void onKeyDown(CCanvas *cnv, SDL_Keycode code) {
   SoftwareRenderer *app = (SoftwareRenderer *)cnv->data;
   Scene *scene = &app->scene;
+  app->lastInput = app->currentTick;
 
   switch (code) {
     case SDLK_w:
@@ -169,6 +189,7 @@ void onKeyDown(CCanvas *cnv, SDL_Keycode code) {
 void onKeyUp(CCanvas *cnv, SDL_Keycode code) {
   SoftwareRenderer *app = (SoftwareRenderer *)cnv->data;
   Scene *scene = &app->scene;
+  app->lastInput = app->currentTick;
 
   switch (code) {
     case SDLK_ESCAPE:
@@ -193,4 +214,24 @@ void onKeyUp(CCanvas *cnv, SDL_Keycode code) {
       app->movingDown = false;
       break;
   }
+}
+
+void calculateSceneRadius(SoftwareRenderer *app) {
+  Scene *scene = &(app->scene);
+  app->sceneRadius = Scene_radius(scene);
+}
+
+void calculateCameraPosAndSpeed(SoftwareRenderer *app) {
+  Scene *scene = &(app->scene);
+  Camera *cam = &(scene->cam);
+  double r = app->sceneRadius;
+
+  double angle = (double)SDL_GetTicks() / 2000.0;
+  Vec3 newPos = Vec3_cylindrical(r, angle, r / 1.2);
+  SDL_Log("new Pos %f %f %f", newPos.x, newPos.y, newPos.z);
+  Vec3 newDirection = Vec3_copy(&newPos);
+  Vec3_setLength(&newDirection, -1);
+
+  Camera_setLookDirection(cam, &newDirection);
+  cam->pos = newPos;
 }
