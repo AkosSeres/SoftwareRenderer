@@ -45,6 +45,10 @@ void init(CCanvas *cnv) {
   SoftwareRenderer *app = (SoftwareRenderer *)cnv->data;
   Scene *scene = &app->scene;
 
+  // Set brush colors
+  CCanvas_setBgColor(cnv, rgb(0, 0, 0));
+  CCanvas_setBrushColor(cnv, rgb(255, 255, 255));
+
   // Initalise variables with default values
   app->vel = Vec3_new(0, 0, 0);
   app->moveForce = 1;
