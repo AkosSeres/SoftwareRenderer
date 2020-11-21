@@ -23,11 +23,12 @@
     <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault();"></canvas>
     <script>
         var Module = {
-            wasmBinaryFile: "index.wasm",
+            wasmBinaryFile: 'index.wasm',
+            // Needed because of emscripten_set_main_loop_arg
             noExitRuntime: true,
             canvas: (function () {
                 let canvas = document.getElementById('canvas');
-                canvas.addEventListener("webglcontextlost", function (e) {
+                canvas.addEventListener('webglcontextlost', function (e) {
                     alert('WebGL context lost. You will need to reload the page.');
                     e.preventDefault();
                 }, false);

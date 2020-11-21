@@ -1,5 +1,10 @@
 #include <ccanvas.h>
 
+#ifdef __EMSCRIPTEN__
+EM_JS(int, getBrowserWidth, (), { return window.innerWidth; });
+EM_JS(int, getBrowserHeight, (), { return window.innerHeight; });
+#endif
+
 /**
  * Function that creates the CCanvas instance and sets up SDL
  * Creates the window and starts the main loop
@@ -12,7 +17,16 @@ void CCanvas_create(initFuncDef initFunc, updateFuncDef updateFunc,
 
   // Create window and set sizes (both logical and window size)
   SDL_Init(SDL_INIT_VIDEO);
-  SDL_CreateWindowAndRenderer(windowWidth, windowHeight, SDL_WINDOW_RESIZABLE,
+
+  // Create window differently based on the platform
+  // In the browser the canvas will take up the whole screen so the given size
+  // values will be overwritten
+#ifdef __EMSCRIPTEN__
+  windowWidth = getBrowserWidth();
+  windowHeight = getBrowserHeight();
+#endif
+  SDL_CreateWindowAndRenderer(windowWidth, windowHeight,
+                              SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE,
                               &(cnv->window), &(cnv->renderer));
   SDL_RenderSetLogicalSize(cnv->renderer, canvasWidth, canvasHeight);
 
