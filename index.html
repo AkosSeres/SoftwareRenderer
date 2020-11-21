@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        html,
+        body {
+            position: relative;
+            height: 100%;
+            overflow: hidden
+        }
+
+        body,
+        canvas {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <title>WASM Sofrware renderer</title>
+</head>
+
+<body>
+    <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault();"></canvas>
+    <script>
+        var Module = {
+            wasmBinaryFile: "index.wasm",
+            noExitRuntime: true,
+            canvas: (function () {
+                let canvas = document.getElementById('canvas');
+                canvas.addEventListener("webglcontextlost", function (e) {
+                    alert('WebGL context lost. You will need to reload the page.');
+                    e.preventDefault();
+                }, false);
+                return canvas;
+            })(),
+            print: function (msg) {
+                console.log(msg);
+            },
+            printErr: function (msg) {
+                console.error(msg);
+            }
+        }
+
+        document.onload = () => {
+            let canvas = document.getElementById('canvas');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+    </script>
+    <script src="index.js"></script>
+</body>
+
+</html>
