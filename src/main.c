@@ -50,6 +50,10 @@ void init(CCanvas *cnv) {
   SoftwareRenderer *app = (SoftwareRenderer *)cnv->data;
   Scene *scene = &app->scene;
 
+  // Set initial tick counts
+  app->currentTick = SDL_GetTicks();
+  app->lastInput = app->currentTick;
+
   // Set brush colors
   CCanvas_setBgColor(cnv, rgb(0, 0, 0));
   CCanvas_setBrushColor(cnv, rgb(255, 255, 255));
