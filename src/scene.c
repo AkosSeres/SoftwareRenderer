@@ -73,13 +73,27 @@ void Scene_loadObj(Scene* scene, const char* fileName) {
       int vCount = 0;
       readVertexNumbers(&(line[2]), vertexNumbers, &vCount);
       for (int i = 1; i < vCount; i++) {
-        scene->edges[scene->edgeCount++] =
-            Edge_new(vertexNumbers[i - 1] - 1, vertexNumbers[i] - 1);
+        pushEdgeNoDuplicates(scene, vertexNumbers[i - 1] - 1,
+                             vertexNumbers[i] - 1);
       }
-      scene->edges[scene->edgeCount++] =
-          Edge_new(vertexNumbers[0] - 1, vertexNumbers[vCount - 1] - 1);
+      pushEdgeNoDuplicates(scene, vertexNumbers[0] - 1,
+                           vertexNumbers[vCount - 1] - 1);
     } else if (line[0] == 'l' && line[1] == ' ') {
+      if ((scene->edgeCount) >= (allocatedEdges - 64)) {
+        Edge* old = scene->edges;
+        scene->edges = (Edge*)malloc(2 * allocatedEdges * sizeof(Edge));
+        memcpy(scene->edges, old, allocatedEdges * sizeof(Edge));
+        free(old);
+        allocatedEdges *= 2;
+      }
       // Read polyline
+      long int vertexNumbers[64];
+      int vCount = 0;
+      readVertexNumbers(&(line[2]), vertexNumbers, &vCount);
+      for (int i = 1; i < vCount; i++) {
+        pushEdgeNoDuplicates(scene, vertexNumbers[i - 1] - 1,
+                             vertexNumbers[i] - 1);
+      }
     }
   }
 
@@ -122,4 +136,16 @@ void readVertexNumbers(char* str, long int* vertexList, int* vertexCount) {
     if (*current == '\n' || *current == '\0') return;
   }
   readVertexNumbers(current, &(vertexList[1]), vertexCount);
+}
+
+void pushEdgeNoDuplicates(Scene* scene, long a, long b) {
+  if (a > b) {
+    int swap = b;
+    b = a;
+    a = swap;
+  }
+  for (long i = scene->edgeCount - 1; i >= 0; i--) {
+    if (scene->edges[i].a == a && scene->edges[i].b == b) return;
+  }
+  scene->edges[scene->edgeCount++] = Edge_new(a, b);
 }

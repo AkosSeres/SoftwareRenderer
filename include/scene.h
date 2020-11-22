@@ -32,5 +32,6 @@ void Scene_free(Scene* scene);
 double Scene_radius(Scene* scene);
 
 void readVertexNumbers(char* str, long int* vertexList, int* vertexCount);
+void pushEdgeNoDuplicates(Scene* scene, long a, long b);
 
 #endif
