@@ -1,5 +1,5 @@
 # WASMRenderBench
-A benchmark between WebAssembly, JavaScript and native C software rendering in SDL
+A benchmark between WebAssembly, JavaScript and native C software rendering in SDL.
 The WASM build is available [here](https://akosseres.github.io/WASMRenderBench/)! When opened, it loads a base scene from a prepackaged .obj file, but any [Wavefront .obj file](https://en.wikipedia.org/wiki/Wavefront_.obj_file) can be opened and viewed by dragging and dropping the .obj file into the browser window on the canvas.
 ##### Controls:
  - WASD: movement
