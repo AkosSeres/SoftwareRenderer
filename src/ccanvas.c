@@ -139,6 +139,9 @@ void CCanvas_clear(CCanvas* cnv) {
   SDL_SetRenderDrawColor(cnv->renderer, getR(cnv->bgColor), getG(cnv->bgColor),
                          getB(cnv->bgColor), getA(cnv->bgColor));
   SDL_RenderClear(cnv->renderer);
+  SDL_SetRenderDrawColor(cnv->renderer, getR(cnv->brushColor),
+                         getG(cnv->brushColor), getB(cnv->brushColor),
+                         getA(cnv->brushColor));
 }
 
 /**
@@ -199,6 +202,14 @@ void CCanvas_line(CCanvas* cnv, int x1, int y1, int x2, int y2, int thickness) {
   // Render the rectangle while rotating it
   SDL_RenderCopyEx(cnv->renderer, cnv->brush, &srcRect, &dst,
                    angle * 180 / M_PI, NULL, SDL_FLIP_NONE);
+}
+
+/**
+ * Function for drawing lines with thickness of 1
+ * It the default SDL line rendering method
+ */
+void CCanvas_preciseLine(CCanvas* cnv, int x1, int y1, int x2, int y2) {
+  SDL_RenderDrawLine(cnv->renderer, x1, y1, x2, y2);
 }
 
 void CCanvas_handleEvents(CCanvas* cnv) {

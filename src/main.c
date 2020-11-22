@@ -131,9 +131,9 @@ void draw(CCanvas *cnv) {
         scene->projectedPoints[e.b].x != NAN &&
         scene->projectedPoints[e.a].y != NAN &&
         scene->projectedPoints[e.b].y != NAN) {
-      CCanvas_line(cnv, scene->projectedPoints[e.a].x,
+      CCanvas_preciseLine(cnv, scene->projectedPoints[e.a].x,
                    scene->projectedPoints[e.a].y, scene->projectedPoints[e.b].x,
-                   scene->projectedPoints[e.b].y, 1);
+                   scene->projectedPoints[e.b].y);
     }
   }
 }

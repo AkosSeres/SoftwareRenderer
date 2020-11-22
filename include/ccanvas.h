@@ -65,6 +65,7 @@ Uint32 rgb(Uint8 r, Uint8 g, Uint8 b);
 // TODO: implement functions for drawing rectangles and maybe circles
 void CCanvas_clear(CCanvas* cnv);
 void CCanvas_line(CCanvas* cnv, int x1, int y1, int x2, int y2, int thickness);
+void CCanvas_preciseLine(CCanvas* cnv, int x1, int y1, int x2, int y2);
 
 // Function definitions for event handling
 typedef void (*keyDownFunc)(CCanvas*, SDL_Keycode);
