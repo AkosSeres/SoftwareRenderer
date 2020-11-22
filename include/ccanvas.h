@@ -9,6 +9,7 @@
 #include <math.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <time.h>
 
 // Struct that holds all the data needed for the program to run
 typedef struct {
@@ -18,7 +19,9 @@ typedef struct {
   Uint32 bgColor;
   Uint32 brushColor;
   SDL_Texture* brush;
-  bool quit;  // False by default, the program quits when set to true
+  clock_t lastTime,
+      currentTime;  // Variables for measuring elapsed time betwen frames
+  bool quit;        // False by default, the program quits when set to true
   int canvasWidth, canvasHeight;  // Logical size of the canvas (not the window
                                   // size since the window is resizable)
   void* updateFunc;  // Functions given by the user, called every frame in the

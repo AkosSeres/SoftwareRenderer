@@ -38,6 +38,8 @@ void CCanvas_create(initFuncDef initFunc, updateFuncDef updateFunc,
   cnv->canvasWidth = canvasWidth;
   cnv->canvasHeight = canvasHeight;
   cnv->quit = false;
+  cnv->lastTime = cnv->currentTime =
+      clock();  // Set clock values for the first time
 
   // Create the texture containing the single pixel used for lines
   cnv->brush = SDL_CreateTexture(cnv->renderer, SDL_PIXELFORMAT_RGBA8888,
@@ -65,7 +67,6 @@ void CCanvas_create(initFuncDef initFunc, updateFuncDef updateFunc,
 #else
   while (cnv->quit == false) {
     CCanvas_loop(cnv);
-    SDL_Delay(16);
   }
 #endif
 
@@ -157,9 +158,17 @@ void CCanvas_loop(void* _cnv) {
   // Handle events first
   CCanvas_handleEvents(cnv);
 
-  // Call the update function with a fixed dt (60 fps)
-  // TODO: implement frame timing and/or time measuring
-  ((updateFuncDef)(cnv)->updateFunc)(16.0, cnv);
+  // Calculate elapsed time
+  cnv->currentTime = clock();
+  double dt = ((double)(cnv->currentTime - cnv->lastTime) * 1000.0) /
+              ((double)CLOCKS_PER_SEC);
+
+  // Call the update function with the elapsed time since the last update in
+  // milliseconds
+  ((updateFuncDef)(cnv)->updateFunc)(dt, cnv);
+
+  // Then set current time as the last one for the next update
+  cnv->lastTime = cnv->currentTime;
 
   // Call draw function
   ((drawFuncDef)cnv->drawFunc)(cnv);
