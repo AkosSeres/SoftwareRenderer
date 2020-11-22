@@ -14,3 +14,5 @@ if(WIN32)
 else()
     target_link_libraries(soft_renderer ${SDL2_LIBRARIES})
 endif()
+
+target_link_libraries(soft_renderer m)
