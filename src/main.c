@@ -52,7 +52,7 @@ void init(CCanvas *cnv) {
 
   // Set initial tick counts
   app->currentTick = SDL_GetTicks();
-  app->lastInput = app->currentTick;
+  app->lastInput = 0;
 
   // Set brush colors
   CCanvas_setBgColor(cnv, rgb(0, 0, 0));
@@ -111,7 +111,7 @@ void update(double dt, CCanvas *cnv) {
   Vec3_mult(&displacement, dt / 1000);
   Vec3_add(&(scene->cam.pos), &displacement);
 
-  if (app->currentTick - app->lastInput > 10000) {
+  if (app->lastInput == 0 || app->currentTick - app->lastInput > 10000) {
     calculateCameraPosAndSpeed(app);
   }
 
@@ -131,9 +131,9 @@ void draw(CCanvas *cnv) {
         scene->projectedPoints[e.b].x != NAN &&
         scene->projectedPoints[e.a].y != NAN &&
         scene->projectedPoints[e.b].y != NAN) {
-      CCanvas_preciseLine(cnv, scene->projectedPoints[e.a].x,
-                   scene->projectedPoints[e.a].y, scene->projectedPoints[e.b].x,
-                   scene->projectedPoints[e.b].y);
+      CCanvas_preciseLine(
+          cnv, scene->projectedPoints[e.a].x, scene->projectedPoints[e.a].y,
+          scene->projectedPoints[e.b].x, scene->projectedPoints[e.b].y);
     }
   }
 }
