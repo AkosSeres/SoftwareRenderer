@@ -2,6 +2,8 @@
 <html>
 
 <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <style>
         html,
         body {
@@ -19,14 +21,14 @@
     <title>WASM Sofrware renderer</title>
 </head>
 
-<body ondrop="fileDropped(event);" ondragover="event.preventDefault();">
-    <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault();"></canvas>
-    <script>
+<body>
+    <canvas class="emscripten" id="canvas"></canvas>
+    <script type='text/javascript'>
         var Module = {
-            wasmBinaryFile: 'index.wasm',
+            'wasmBinaryFile': 'index.wasm',
             // Needed because of emscripten_set_main_loop_arg
-            noExitRuntime: true,
-            canvas: (function () {
+            'noExitRuntime': true,
+            'canvas': (function () {
                 let canvas = document.getElementById('canvas');
                 canvas.addEventListener('webglcontextlost', function (e) {
                     alert('WebGL context lost. You will need to reload the page.');
@@ -34,34 +36,38 @@
                 }, false);
                 return canvas;
             })(),
-            print: function (msg) {
+            'print': function (msg) {
                 console.log(msg);
             },
-            printErr: function (msg) {
+            'printErr': function (msg) {
                 console.error(msg);
-            }
-        }
+            },
+            'preRun': [function () {
+                document.onload = () => {
+                    let canvas = document.getElementById('canvas');
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                }
 
-        document.onload = () => {
-            let canvas = document.getElementById('canvas');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
+                const fileDropped = async function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
 
-        async function fileDropped(event) {
-            event.preventDefault();
-            event.stopPropagation();
+                    let fileToLoad = event.dataTransfer.files[0];
+                    let contents = await fileToLoad.text();
+                    let name = fileToLoad.name;
+                    FS.writeFile(name, contents);
+                    contents = FS.readFile(name, { encoding: 'utf8' });
 
-            let fileToLoad = event.dataTransfer.files[0];
-            let contents = await fileToLoad.text();
-            let name = fileToLoad.name;
-            FS.writeFile(name, contents);
-            contents = FS.readFile(name, { encoding: 'utf8' });
+                    Module.ccall('CCanvas_dropEventForSDL', 'number', ['string'], [name]);
+                }
 
-            Module.ccall('CCanvas_dropEventForSDL', 'number', ['string'], [name]);
+                document.body.addEventListener('dragover', (e) => { e.preventDefault(); });
+                document.body.addEventListener('drop', fileDropped);
+            }]
         }
     </script>
-    <script src="index.js"></script>
+    {{{ SCRIPT }}}
 </body>
 
 </html>
