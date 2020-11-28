@@ -28,12 +28,11 @@ typedef struct {
   Uint32 brushColor;
   SDL_Texture* brush;
   clock_t lastTime,
-      currentTime;  // Variables for measuring elapsed time betwen frames
-  bool quit;        // False by default, the program quits when set to true
-  int canvasWidth, canvasHeight;  // Logical size of the canvas (not the window
-                                  // size since the window is resizable)
-  void* updateFunc;  // Functions given by the user, called every frame in the
-                     // main loop
+      currentTime;    // Variables for measuring elapsed time betwen frames
+  bool quit;          // False by default, the program quits when set to true
+  int width, height;  // Current width and height of window
+  void* updateFunc;   // Functions given by the user, called every frame in the
+                      // main loop
   void* drawFunc;
   // Function pointers called when certain events occur
   void* onKeyDown;
@@ -42,6 +41,7 @@ typedef struct {
   void* onMouseButtonUp;
   void* onMouseMove;
   void* onFileDrop;
+  void* onResize;
   // Data pointer
   void* data;
 } CCanvas;
@@ -53,8 +53,8 @@ typedef void (*initFuncDef)(CCanvas*);
 
 // Functions to handle creating the instance and quitting
 void CCanvas_create(initFuncDef initFunc, updateFuncDef updateFunc,
-                    drawFuncDef drawFunc, int canvasWidth, int canvasHeight,
-                    int windowWidth, int windowHeight, void* data);
+                    drawFuncDef drawFunc, int windowWidth, int windowHeight,
+                    void* data);
 void CCanvas_quit(CCanvas* cnv);
 
 // Main loop function
@@ -85,6 +85,7 @@ typedef void (*mouseButtonDownFunc)(CCanvas*, Uint8, Sint32, Sint32);
 typedef void (*mouseButtonUpFunc)(CCanvas*, Uint8, Sint32, Sint32);
 typedef void (*mouseMoveFunc)(CCanvas*, Sint32, Sint32);
 typedef void (*fileDropFunc)(CCanvas*, char*);
+typedef void (*resizeFunc)(CCanvas*, Sint32, Sint32);
 
 // Functions for event handling and for setting up listeners/watchers
 void CCanvas_handleEvents(CCanvas* cnv);
@@ -95,9 +96,11 @@ void CCanvas_watchMouseButtonDown(CCanvas* cnv, mouseButtonDownFunc f);
 void CCanvas_watchMouseButtonUp(CCanvas* cnv, mouseButtonUpFunc f);
 void CCanvas_watchMouseMove(CCanvas* cnv, mouseMoveFunc f);
 void CCanvas_watchFileDrop(CCanvas* cnv, fileDropFunc f);
+void CCanvas_watchResize(CCanvas* cnv, resizeFunc f);
 
 #ifdef __EMSCRIPTEN__
 int CCanvas_dropEventForSDL(char* fileName);
+int CCanvas_browserWasResized();
 #endif
 
 #endif

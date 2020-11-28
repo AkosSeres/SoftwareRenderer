@@ -39,12 +39,13 @@ void onMouseMove(CCanvas *cnv, Sint32 dx, Sint32 dy);
 void onFileDrop(CCanvas *cnv, char *fileName);
 void onKeyDown(CCanvas *cnv, SDL_Keycode code);
 void onKeyUp(CCanvas *cnv, SDL_Keycode code);
+void onResize(CCanvas *cnv, Sint32 newWidth, Sint32 newHeight);
 void calculateSceneRadius(SoftwareRenderer *app);
 void calculateCameraPosAndSpeed(SoftwareRenderer *app);
 
 int main(int argc, char *argv[]) {
   SoftwareRenderer app;
-  CCanvas_create(init, update, draw, 1024, 1024, 512, 512, &app);
+  CCanvas_create(init, update, draw, 512, 512, &app);
   Scene_free(&(app.scene));
   return 0;
 }
@@ -74,7 +75,7 @@ void init(CCanvas *cnv) {
   Scene_erase(scene);
   Scene_setCamera(
       scene,
-      Camera_new(Vec3_new(0, 0, 0), Vec3_new(0, 1, 0), 1024, 1024, 3.14 / 3,
+      Camera_new(Vec3_new(0, 0, 0), Vec3_new(0, 1, 0), 512, 512, 3.14 / 3,
                  3.14 / 3));  // Put camera in some default position
 
   // Then load the base scene
@@ -88,6 +89,7 @@ void init(CCanvas *cnv) {
   CCanvas_watchMouseButtonDown(cnv, onMouseButtonDown);
   CCanvas_watchMouseMove(cnv, onMouseMove);
   CCanvas_watchFileDrop(cnv, onFileDrop);
+  CCanvas_watchResize(cnv, onResize);
 }
 
 void update(double dt, CCanvas *cnv) {
@@ -231,6 +233,14 @@ void onKeyUp(CCanvas *cnv, SDL_Keycode code) {
       app->movingDown = false;
       break;
   }
+}
+
+void onResize(CCanvas *cnv, Sint32 newWidth, Sint32 newHeight) {
+  SoftwareRenderer *app = (SoftwareRenderer *)cnv->data;
+  Camera *cam = &(app->scene.cam);
+
+  cam->hRes = newWidth;
+  cam->vRes = newHeight;
 }
 
 void calculateSceneRadius(SoftwareRenderer *app) {

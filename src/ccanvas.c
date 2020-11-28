@@ -18,8 +18,8 @@ EM_JS(int, getBrowserHeight, (), { return window.innerHeight; });
  * Creates the window and starts the main loop
  */
 void CCanvas_create(initFuncDef initFunc, updateFuncDef updateFunc,
-                    drawFuncDef drawFunc, int canvasWidth, int canvasHeight,
-                    int windowWidth, int windowHeight, void* data) {
+                    drawFuncDef drawFunc, int windowWidth, int windowHeight,
+                    void* data) {
   // Allocate memory for the canvas
   CCanvas* cnv = malloc(sizeof(CCanvas));
 
@@ -36,15 +36,12 @@ void CCanvas_create(initFuncDef initFunc, updateFuncDef updateFunc,
   SDL_CreateWindowAndRenderer(windowWidth, windowHeight,
                               SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE,
                               &(cnv->window), &(cnv->renderer));
-  SDL_RenderSetLogicalSize(cnv->renderer, canvasWidth, canvasHeight);
 
   // Set CCanvas member values
   CCancas_resetEventHandlers(cnv);
   cnv->data = data;
   cnv->updateFunc = updateFunc;
   cnv->drawFunc = drawFunc;
-  cnv->canvasWidth = canvasWidth;
-  cnv->canvasHeight = canvasHeight;
   cnv->quit = false;
   cnv->lastTime = cnv->currentTime =
       clock();  // Set clock values for the first time
@@ -267,6 +264,16 @@ void CCanvas_handleEvents(CCanvas* cnv) {
           ((fileDropFunc)cnv->onFileDrop)(cnv, event->drop.file);
         SDL_free(event->drop.file);
         break;
+
+      case SDL_WINDOWEVENT:
+        if (event->window.event == SDL_WINDOWEVENT_RESIZED) {
+          cnv->width = event->window.data1;
+          cnv->height = event->window.data2;
+          if (cnv->onResize != NULL)
+            ((resizeFunc)cnv->onResize)(cnv, event->window.data1,
+                                        event->window.data2);
+        }
+        break;
     }
   }
 }
@@ -281,6 +288,7 @@ void CCancas_resetEventHandlers(CCanvas* cnv) {
   cnv->onMouseButtonUp = NULL;
   cnv->onMouseMove = NULL;
   cnv->onFileDrop = NULL;
+  cnv->onResize = NULL;
 }
 
 /**
@@ -301,8 +309,10 @@ void CCanvas_watchMouseMove(CCanvas* cnv, mouseMoveFunc f) {
 void CCanvas_watchFileDrop(CCanvas* cnv, fileDropFunc f) {
   cnv->onFileDrop = f;
 }
+void CCanvas_watchResize(CCanvas* cnv, resizeFunc f) { cnv->onResize = f; }
 
 #ifdef __EMSCRIPTEN__
+
 int CCanvas_dropEventForSDL(char* fileName) {
   SDL_Event* e = SDL_malloc(sizeof(SDL_Event));
   SDL_DropEvent event;
@@ -318,4 +328,7 @@ int CCanvas_dropEventForSDL(char* fileName) {
   SDL_free(e);
   return retVal;
 }
+
+int CCanvas_browserWasResized() { return 0; }
+
 #endif
