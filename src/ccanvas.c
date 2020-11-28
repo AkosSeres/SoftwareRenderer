@@ -42,6 +42,8 @@ void CCanvas_create(initFuncDef initFunc, updateFuncDef updateFunc,
   cnv->updateFunc = updateFunc;
   cnv->drawFunc = drawFunc;
   cnv->quit = false;
+  cnv->width = windowWidth;
+  cnv->height = windowHeight;
   cnv->lastTime = cnv->currentTime =
       clock();  // Set clock values for the first time
 

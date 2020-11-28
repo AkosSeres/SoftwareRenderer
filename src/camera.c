@@ -143,6 +143,7 @@ Point Camera_projectLinear(Camera* cam, Vec3* point) {
   if (z < 0) return Point_new(NAN, NAN);
 
   double Znear = 1;
-  return Point_new(cam->hRes * (1 + x * Znear / z) / 2,
-                   cam->vRes * (1 + y * Znear / z) / 2);
+  return Point_new(
+      cam->hRes * (1 + x * Znear / z) / 2,
+      cam->vRes * (1 + (cam->hRes / cam->vRes) * y * Znear / z) / 2);
 }

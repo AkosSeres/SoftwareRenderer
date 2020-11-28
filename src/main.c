@@ -73,10 +73,10 @@ void init(CCanvas *cnv) {
   app->movingBackward = app->movingDown = app->movingForward = app->movingLeft =
       app->movingRight = app->movingUp = false;
   Scene_erase(scene);
-  Scene_setCamera(
-      scene,
-      Camera_new(Vec3_new(0, 0, 0), Vec3_new(0, 1, 0), 512, 512, 3.14 / 3,
-                 3.14 / 3));  // Put camera in some default position
+  Scene_setCamera(scene,
+                  Camera_new(Vec3_new(0, 0, 0), Vec3_new(0, 1, 0), cnv->width,
+                             cnv->height, 3.14 / 3,
+                             3.14 / 3));  // Put camera in some default position
 
   // Then load the base scene
   Scene_loadObj(&(app->scene), "base_scene.obj");
