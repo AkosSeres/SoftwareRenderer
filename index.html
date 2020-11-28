@@ -43,10 +43,13 @@
                 console.error(msg);
             },
             'preRun': [function () {
-                document.onload = () => {
+                window.onresize = document.onload = () => {
                     let canvas = document.getElementById('canvas');
                     canvas.width = window.innerWidth;
                     canvas.height = window.innerHeight;
+                    canvas.style.width = window.innerWidth + 'px';
+                    canvas.style.height = window.innerHeight + 'px';
+                    Module.ccall('CCanvas_browserWasResized', 'number', [], []);
                 }
 
                 const fileDropped = async function (event) {

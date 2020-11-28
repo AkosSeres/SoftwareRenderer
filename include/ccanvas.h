@@ -46,6 +46,9 @@ typedef struct {
   void* data;
 } CCanvas;
 
+// Define custom event type enum for custom event handling
+enum CCanvas_CustomEventType { CCANVAS_WASM_WINDOW_RESIZED };
+
 // Function pointer definitions for main loop functions
 typedef void (*updateFuncDef)(double, CCanvas*);
 typedef void (*drawFuncDef)(CCanvas*);

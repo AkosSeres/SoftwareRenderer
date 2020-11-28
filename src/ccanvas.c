@@ -33,8 +33,7 @@ void CCanvas_create(initFuncDef initFunc, updateFuncDef updateFunc,
   windowWidth = getBrowserWidth();
   windowHeight = getBrowserHeight();
 #endif
-  SDL_CreateWindowAndRenderer(windowWidth, windowHeight,
-                              SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE,
+  SDL_CreateWindowAndRenderer(windowWidth, windowHeight, SDL_WINDOW_RESIZABLE,
                               &(cnv->window), &(cnv->renderer));
 
   // Set CCanvas member values
@@ -274,6 +273,20 @@ void CCanvas_handleEvents(CCanvas* cnv) {
                                         event->window.data2);
         }
         break;
+
+      case SDL_USEREVENT:
+        switch (event->user.code) {
+#ifdef __EMSCRIPTEN__
+          case CCANVAS_WASM_WINDOW_RESIZED:
+            cnv->width = *((int*)(event->user.data1));
+            cnv->height = *((int*)(event->user.data2));
+            SDL_SetWindowSize(cnv->window, cnv->width, cnv->height);
+            if (cnv->onResize != NULL)
+              ((resizeFunc)cnv->onResize)(cnv, cnv->width, cnv->height);
+            break;
+#endif
+        }
+        break;
     }
   }
 }
@@ -329,6 +342,26 @@ int CCanvas_dropEventForSDL(char* fileName) {
   return retVal;
 }
 
-int CCanvas_browserWasResized() { return 0; }
+int CCanvas_browserWasResized() {
+  SDL_Event* e = SDL_malloc(sizeof(SDL_Event));
+  SDL_UserEvent event;
+  event.type = SDL_USEREVENT;
+  int* width = malloc(sizeof(int));
+  int* height = malloc(sizeof(int));
+  *width = getBrowserWidth();
+  *height = getBrowserHeight();
+  event.data1 = width;
+  event.data2 = height;
+  event.timestamp = SDL_GetTicks();
+  event.windowID = 1;
+  event.code = CCANVAS_WASM_WINDOW_RESIZED;
+  e->type = SDL_USEREVENT;
+  e->user = event;
+  int retVal = SDL_PushEvent(e);
+  SDL_free(e);
+  free(width);
+  free(height);
+  return retVal;
+}
 
 #endif
