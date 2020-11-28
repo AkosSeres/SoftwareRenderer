@@ -1,6 +1,6 @@
 # WASMRenderBench
 A benchmark between WebAssembly, JavaScript and native C software rendering in SDL.
-The WASM build is available [here](https://akosseres.github.io/WASMRenderBench/)! When opened, it loads a base scene from a prepackaged .obj file, but any [Wavefront .obj file](https://en.wikipedia.org/wiki/Wavefront_.obj_file) can be opened and viewed by dragging and dropping the .obj file into the browser window on the canvas.
+The WASM build is available [here](https://akosseres.github.io/SoftwareRenderer/)! When opened, it loads a base scene from a prepackaged .obj file, but any [Wavefront .obj file](https://en.wikipedia.org/wiki/Wavefront_.obj_file) can be opened and viewed by dragging and dropping the .obj file into the browser window on the canvas.
 ##### Controls:
  - WASD: movement
  - Space: go up
@@ -24,4 +24,4 @@ make
 ```
 The executable should be ready in the build directory along with the base_scene.obj file.
 ### Windows
-On Windows, the CMake GUI should be downloaded along with the latest version of [SDL2](https://www.libsdl.org/download-2.0.php), then after configuring the install folder of SDL2 in CMake, the Makefile can be generated.
+On Windows, the CMake GUI should be downloaded and installed along with the latest version of [SDL2](https://www.libsdl.org/download-2.0.php), then after configuring the install folder of SDL2 in CMake, the Makefile can be generated.
