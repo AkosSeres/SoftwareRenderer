@@ -1,3 +1,11 @@
+/**
+ * Copyright 2020 Ákos Seres
+ *
+ * Use of this source code is governed by an MIT-style
+ * license that can be found in the LICENSE file or at
+ * https://opensource.org/licenses/MIT.
+ */
+
 #include <ccanvas.h>
 
 #ifdef __EMSCRIPTEN__
@@ -57,10 +65,7 @@ void CCanvas_create(initFuncDef initFunc, updateFuncDef updateFunc,
    * It is handled differently in the WASM build
    * The emscripten_set_main_loop_arg uses the window.requestAnimationFrame() JS
    * method to periodically call the given function in sync with the monitor
-   * refresh rate and it handles the timing automatically. In the native build,
-   * the timing has to be handled manually
-   * TODO: find a way to sync the native build with the monitor and not use a
-   * hardcoded frametime
+   * refresh rate and it handles the timing automatically.
    */
 #ifdef __EMSCRIPTEN__
   emscripten_set_main_loop_arg(CCanvas_loop, cnv, 0, 1);
@@ -148,8 +153,6 @@ void CCanvas_clear(CCanvas* cnv) {
 /**
  * This funciton is called every frame
  * It calls the given update and draw functions then updates the screen
- * TODO: implement time measuring so that the updateFunc is given a hardcoded
- * delta time value
  */
 void CCanvas_loop(void* _cnv) {
   // Cast the cnv struct pointer into the right type for easier use

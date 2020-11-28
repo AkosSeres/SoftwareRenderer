@@ -1,3 +1,11 @@
+/**
+ * Copyright 2020 Ákos Seres
+ *
+ * Use of this source code is governed by an MIT-style
+ * license that can be found in the LICENSE file or at
+ * https://opensource.org/licenses/MIT.
+ */
+
 #ifndef _CCANVAS_MATH_VEC3_
 #define _CCANVAS_MATH_VEC3_
 
@@ -30,7 +38,7 @@ void Vec3_rotateX(Vec3 *v, double angle);
 void Vec3_rotateY(Vec3 *v, double angle);
 void Vec3_rotateZ(Vec3 *v, double angle);
 void Vec3_rotateAroundAxis(Vec3 *v, Vec3 *axis, double angle);
-Vec3 Vec3_cross(Vec3* v1, Vec3* v2);
+Vec3 Vec3_cross(Vec3 *v1, Vec3 *v2);
 Vec3 Vec3_cylindrical(double r, double angle, double z);
 
 #endif

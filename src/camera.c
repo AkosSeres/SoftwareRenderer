@@ -1,3 +1,11 @@
+/**
+ * Copyright 2020 Ákos Seres
+ *
+ * Use of this source code is governed by an MIT-style
+ * license that can be found in the LICENSE file or at
+ * https://opensource.org/licenses/MIT.
+ */
+
 #include <camera.h>
 
 Camera Camera_new(Vec3 pos, Vec3 up, double hRes, double vRes, double hFov,

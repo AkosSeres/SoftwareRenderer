@@ -1,3 +1,11 @@
+/**
+ * Copyright 2020 Ákos Seres
+ *
+ * Use of this source code is governed by an MIT-style
+ * license that can be found in the LICENSE file or at
+ * https://opensource.org/licenses/MIT.
+ */
+
 #include <scene.h>
 
 void Scene_erase(Scene* scene) {
