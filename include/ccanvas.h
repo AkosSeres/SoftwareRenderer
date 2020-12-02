@@ -35,6 +35,7 @@ typedef struct {
                       // main loop
   void* drawFunc;
   // Function pointers called when certain events occur
+  // TODO: cover more tpyes of events
   void* onKeyDown;
   void* onKeyUp;
   void* onMouseButtonDown;
@@ -82,12 +83,20 @@ void CCanvas_line(CCanvas* cnv, int x1, int y1, int x2, int y2, int thickness);
 void CCanvas_preciseLine(CCanvas* cnv, int x1, int y1, int x2, int y2);
 
 // Function definitions for event handling
+// The keyDown and keyUp functions recieve an SDL_Keycode that holds wich key
+// was pressed
 typedef void (*keyDownFunc)(CCanvas*, SDL_Keycode);
 typedef void (*keyUpFunc)(CCanvas*, SDL_Keycode);
+// The mouseButton functions recieve an index for wich button changed and the
+// current coordinates of the mouse
 typedef void (*mouseButtonDownFunc)(CCanvas*, Uint8, Sint32, Sint32);
 typedef void (*mouseButtonUpFunc)(CCanvas*, Uint8, Sint32, Sint32);
+// The mouseMove function recieves the current coordinates of the mouse
 typedef void (*mouseMoveFunc)(CCanvas*, Sint32, Sint32);
+// The fileDrop event function recieves a string pointer containing the name of
+// the file dropped
 typedef void (*fileDropFunc)(CCanvas*, char*);
+// The resize event function recieves the new size of the window/canvas
 typedef void (*resizeFunc)(CCanvas*, Sint32, Sint32);
 
 // Functions for event handling and for setting up listeners/watchers

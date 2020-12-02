@@ -260,6 +260,8 @@ void CCanvas_handleEvents(CCanvas* cnv) {
                                             event->motion.yrel);
         break;
 
+        // When a file is dropped SDL provides a pointer to the filename and it
+        // has to be freed manually
       case SDL_DROPFILE:
         if (cnv->onFileDrop != NULL)
           ((fileDropFunc)cnv->onFileDrop)(cnv, event->drop.file);
@@ -267,6 +269,8 @@ void CCanvas_handleEvents(CCanvas* cnv) {
         break;
 
       case SDL_WINDOWEVENT:
+        // Store the new size when the window is resized
+        // (also call the corresponding event function if is watched)
         if (event->window.event == SDL_WINDOWEVENT_RESIZED) {
           cnv->width = event->window.data1;
           cnv->height = event->window.data2;
@@ -276,9 +280,13 @@ void CCanvas_handleEvents(CCanvas* cnv) {
         }
         break;
 
+        // Handle custom events
       case SDL_USEREVENT:
         switch (event->user.code) {
 #ifdef __EMSCRIPTEN__
+            // Specific to the WASM build, because window resizing and the
+            // scaling of the canvas is handled in JS
+            // And also the event is fired from JS
           case CCANVAS_WASM_WINDOW_RESIZED:
             cnv->width = *((int*)(event->user.data1));
             cnv->height = *((int*)(event->user.data2));
@@ -326,11 +334,23 @@ void CCanvas_watchFileDrop(CCanvas* cnv, fileDropFunc f) {
 }
 void CCanvas_watchResize(CCanvas* cnv, resizeFunc f) { cnv->onResize = f; }
 
+/**
+ * Functions specific to the WASM build
+ * They are not used by any of the code above
+ * Only called from JS when the right event is detected in the browser
+ */
 #ifdef __EMSCRIPTEN__
 
+/**
+ * This function is called from JS when a file is dropped on the canvas in the
+ * browser, recieves the file name of the dropped file
+ * The file is already loaded into the virtual file system emulated by
+ * emscripten when the function is called
+ */
 int CCanvas_dropEventForSDL(char* fileName) {
   SDL_Event* e = SDL_malloc(sizeof(SDL_Event));
   SDL_DropEvent event;
+  // Set the members of the event to push
   event.type = SDL_DROPFILE;
   event.timestamp = SDL_GetTicks();
   size_t memLen = strlen(fileName) + 1;
@@ -339,17 +359,29 @@ int CCanvas_dropEventForSDL(char* fileName) {
   event.windowID = 0;
   e->type = SDL_DROPFILE;
   e->drop = event;
+  // Push event to the SDL event queue
+  // This is the function that SDL uses to add new events to the queue to be
+  // fetched
   int retVal = SDL_PushEvent(e);
   SDL_free(e);
   return retVal;
 }
 
+/**
+ * This function gets called from JS when the browser window is resized and the
+ * canvas has to be resized too to fit the new size
+ * It fires a custom event for handling resizing in the WASM build
+ * Note that if an SDL_WINDOWEVENT is pushed, it gets rejected by SDL so a
+ * custom event type has to be utilized
+ */
 int CCanvas_browserWasResized() {
   SDL_Event* e = SDL_malloc(sizeof(SDL_Event));
   SDL_UserEvent event;
+  // Set members of the custom event
   event.type = SDL_USEREVENT;
   int* width = malloc(sizeof(int));
   int* height = malloc(sizeof(int));
+  // The new browser window size is stored int data1 and data2
   *width = getBrowserWidth();
   *height = getBrowserHeight();
   event.data1 = width;
@@ -359,6 +391,7 @@ int CCanvas_browserWasResized() {
   event.code = CCANVAS_WASM_WINDOW_RESIZED;
   e->type = SDL_USEREVENT;
   e->user = event;
+  // And fincally push the event to the event queue
   int retVal = SDL_PushEvent(e);
   SDL_free(e);
   free(width);
