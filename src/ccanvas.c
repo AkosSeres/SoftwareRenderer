@@ -379,23 +379,19 @@ int CCanvas_browserWasResized() {
   SDL_UserEvent event;
   // Set members of the custom event
   event.type = SDL_USEREVENT;
-  int* width = malloc(sizeof(int));
-  int* height = malloc(sizeof(int));
+  int width = getBrowserWidth();
+  int height = getBrowserHeight();
   // The new browser window size is stored int data1 and data2
-  *width = getBrowserWidth();
-  *height = getBrowserHeight();
-  event.data1 = width;
-  event.data2 = height;
+  event.data1 = &width;
+  event.data2 = &height;
   event.timestamp = SDL_GetTicks();
   event.windowID = 1;
   event.code = CCANVAS_WASM_WINDOW_RESIZED;
   e->type = SDL_USEREVENT;
   e->user = event;
-  // And fincally push the event to the event queue
+  // And finally push the event to the event queue
   int retVal = SDL_PushEvent(e);
   SDL_free(e);
-  free(width);
-  free(height);
   return retVal;
 }
 
