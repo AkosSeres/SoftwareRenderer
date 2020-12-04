@@ -16,6 +16,10 @@
 #include <string.h>
 #include <vec3.h>
 
+/**
+ * Struct for storing the vertex indices for the endpoints of an edge wich is
+ * just a linesegment to be rendered
+ */
 typedef struct {
   long int a;
   long int b;
@@ -23,6 +27,10 @@ typedef struct {
 
 Edge Edge_new(long int a, long int b);
 
+/**
+ * Struct containing the whole scene that can be rendered: the camera and the
+ * geometry data, plus the points projected to screen space
+ */
 typedef struct {
   Camera cam;
   Vec3* vertices;

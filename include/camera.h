@@ -13,6 +13,10 @@
 #include <point.h>
 #include <vec3.h>
 
+/**
+ * Struct that holds all values needed to describe a camera (position,
+ * orientation, field of view, target resolution)
+ */
 typedef struct {
   Vec3 pos;
   Vec3 up;

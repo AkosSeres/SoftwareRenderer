@@ -12,6 +12,7 @@
 #include <math.h>
 #include <stdbool.h>
 
+// A struct that represents a point in 2D space
 typedef struct {
   double x;
   double y;
